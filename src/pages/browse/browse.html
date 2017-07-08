@@ -4,7 +4,17 @@
 
 <ion-content padding>
   <h2>Music</h2>
-  <p>
-    This will display the available music.
-  </p>
+  <ion-list [style.display]="(currentAlbum != null ? 'none' : '')" [virtualScroll]="albums">
+    <ion-list-header>Albums</ion-list-header>
+    <ion-item *virtualItem="let album" (click)="selectAlbum(album)">
+      {{ album.artist.name }} - {{ album.name }}
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="currentAlbum != null">
+    <ion-item><button ion-button (click)="backToAlbums()">Back</button></ion-item>
+    <ion-list-header>{{ currentAlbum.artist.name }} - {{ currentAlbum.name }}</ion-list-header>
+    <ion-item *ngFor="let song of currentAlbum.songs" (click)="queue(song)">
+      {{ song.name }} / {{ song.duration }}
+    </ion-item>
+  </ion-list>
 </ion-content>

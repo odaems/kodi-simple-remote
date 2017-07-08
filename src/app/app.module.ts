@@ -15,6 +15,7 @@ import { SettingsService } from "../providers/settings.service";
 import { PlaylistService } from "../providers/playlist.service";
 import { ServerApiService } from "../providers/server.api.service";
 import { MusicBrowserService } from "../providers/music.browser.service";
+import { HttpModule, Http } from '@angular/http';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MusicBrowserService } from "../providers/music.browser.service";
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -41,11 +43,11 @@ import { MusicBrowserService } from "../providers/music.browser.service";
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
     ServerApiService,
     PlaylistService,
     MusicBrowserService,
     SettingsService
   ]
 })
-export class AppModule {}
+export class AppModule { }
