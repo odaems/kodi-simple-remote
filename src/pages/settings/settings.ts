@@ -1,14 +1,19 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, ViewController } from 'ionic-angular';
 
 @Component({
   selector: 'page-settings',
   templateUrl: 'settings.html'
 })
-export class SettingsPage {
+export class SettingsModal {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController,
+  public viewCtrl: ViewController) {
 
+  }
+
+  close() {
+    this.viewCtrl.dismiss();
   }
 
 }
