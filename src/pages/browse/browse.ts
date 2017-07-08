@@ -12,8 +12,10 @@ import { MusicBrowserService } from "../../providers/music.browser.service";
 export class BrowsePage {
 
   private albums: Album[];
+  private artists: Artist[];
   private currentAlbum: Album;
   private currentArtist: Artist;
+  private artistMode: boolean;
 
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService) {
@@ -21,10 +23,22 @@ export class BrowsePage {
 
   ngOnInit() {
     this.refresh();
+    this.artistMode = true;
   }
 
   backToAlbums() {
     this.currentAlbum = undefined;
+    this.currentArtist = undefined;
+  }
+
+  selectArtist(artist: Artist) {
+    this.musicBrowser.getArtist(artist).then(
+      (artist: Artist) => {
+        this.currentArtist = artist;
+        this.albums = artist.albums;
+        this.currentAlbum = undefined;
+      }
+    )
   }
 
   selectAlbum(album: Album) {
@@ -33,6 +47,7 @@ export class BrowsePage {
 
   refresh() {
     this.musicBrowser.getAllAlbums().then((albums: Album[]) => this.albums = albums);
+    this.musicBrowser.getAllArtists().then((artists: Artist[]) => this.artists = artists);
   }
 
 }

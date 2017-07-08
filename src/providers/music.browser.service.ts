@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Artist } from "../models/artist";
 import { Album } from "../models/album";
 import { ServerApiService } from "./server.api.service";
-import { Song } from "../models/song";
 
 @Injectable()
 export class MusicBrowserService {
@@ -10,17 +9,16 @@ export class MusicBrowserService {
 
     }
 
-    getAllArtists() {
-
+    getAllArtists(): Promise<Artist[]> {
+        return this.serverApi.getAllArtists();
     }
 
     getAllAlbums(): Promise<Album[]> {
-        console.log("MBS.getAllAlbums()");
         return this.serverApi.getAllAlbums();
     }
 
-    getAllAlbumsForArtist(artist: Artist) {
-
+    getArtist(artist: Artist): Promise<Artist> {
+        return this.serverApi.getAlbumsForArtist(artist);
     }
 
     getAllSongsForArtist(artist: Artist) {

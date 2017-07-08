@@ -3,16 +3,23 @@
 </ion-header>
 
 <ion-content padding>
+  <div text-left>
+    <button ion-button outline [disabled]="currentArtist == null" (click)="backToAlbums()">Artists</button>
+    <button *ngIf="currentArtist != null" ion-button outline [disabled]="currentAlbum == null" (click)="selectArtist(currentArtist)">{{ currentArtist.name }}</button>
+    <button *ngIf="currentAlbum != null" ion-button outline disabled>{{ currentAlbum.name }}</button>
+  </div>
   <h2>Music</h2>
-  <ion-list [style.display]="(currentAlbum != null ? 'none' : '')" [virtualScroll]="albums">
-    <ion-list-header>Albums</ion-list-header>
+  <ion-list [style.display]="((currentArtist != null) ? 'none' : '')" [virtualScroll]="artists">
+    <ion-item *virtualItem="let artist" (click)="selectArtist(artist)">
+      {{ artist.name }}
+    </ion-item>
+  </ion-list>
+  <ion-list [style.display]="((currentArtist == null || currentAlbum != null) ? 'none' : '')" [virtualScroll]="albums">
     <ion-item *virtualItem="let album" (click)="selectAlbum(album)">
       {{ album.artist.name }} - {{ album.name }}
     </ion-item>
   </ion-list>
   <ion-list *ngIf="currentAlbum != null">
-    <ion-item><button ion-button (click)="backToAlbums()">Back</button></ion-item>
-    <ion-list-header>{{ currentAlbum.artist.name }} - {{ currentAlbum.name }}</ion-list-header>
     <ion-item *ngFor="let song of currentAlbum.songs" (click)="queue(song)">
       {{ song.name }} / {{ song.duration }}
     </ion-item>

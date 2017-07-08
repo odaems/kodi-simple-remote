@@ -17,10 +17,24 @@ export class ServerApiService {
     "id": "libSongs"
   }
 
+  private albumsForArtistRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "AudioLibrary.GetAlbums",
+    "params": { "properties": [], "filter": { "artistid": null } },
+    "id": "libSongs"
+  }
+
   private getAllAlbumsRequest: Object = {
     "jsonrpc": "2.0",
     "method": "AudioLibrary.GetAlbums",
     "params": { "properties": ["artist", "artistid"] },
+    "id": "libSongs"
+  }
+
+  private getAllArtistsRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "AudioLibrary.GetArtists",
+    "params": { },
     "id": "libSongs"
   }
 
@@ -34,24 +48,39 @@ export class ServerApiService {
 
 
   constructor(public http: Http, public settings: SettingsService) {
-    console.log(this.generateURL());
   }
 
-  getAllArtists(): Artist[] {
-    return [];
+  getAllArtists(): Promise<Artist[]> {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.getAllArtistsRequest)).subscribe(
+          (responseBody: any) => {
+            let artists: Artist[] = [];
+            if (responseBody.json() != null) {
+              let response = responseBody.json();
+              if (response != null && 'result' in response && 'artists' in response.result && response.result.artists.length > 0) {
+                response.result.artists.forEach((artistFromResponse: any) => {
+                  artists.push(new Artist(artistFromResponse.artistid, artistFromResponse.artist));
+                });
+              }
+            }
+            resolve(artists);
+          }
+        );
+      }
+    );
   }
 
   getAllAlbums(): Promise<Album[]> {
     return new Promise(
       (resolve: any) => {
         this.http.get(this.generateURL() + JSON.stringify(this.getAllAlbumsRequest)).subscribe(
-          (responseBody: any) => {
-            console.log("SAS.getAllAlbums()", responseBody.json());
+          (response: any) => {
             let albums: Album[] = [];
-            if (responseBody.json() != null) {
-              let response = responseBody.json();
-              if (response != null && 'result' in response && 'albums' in response.result && response.result.albums.length > 0) {
-                response.result.albums.forEach((albumFromResponse: any) => {
+            if (response.json() != null) {
+              let responseJSON = response.json();
+              if (responseJSON != null && 'result' in responseJSON && 'albums' in responseJSON.result && responseJSON.result.albums.length > 0) {
+                responseJSON.result.albums.forEach((albumFromResponse: any) => {
                   let albumArtist: Artist = new Artist(albumFromResponse.artistid[0], albumFromResponse.artist[0]);
                   albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, albumArtist));
                 });
@@ -84,6 +113,30 @@ export class ServerApiService {
               }
             }
             resolve({});
+          }
+        );
+      }
+    );
+  }
+
+  getAlbumsForArtist(artist: Artist): Promise<Artist> {
+    return new Promise(
+      (resolve: any) => {
+        let requestObject: any = this.albumsForArtistRequest;
+        requestObject.params.filter.artistid = artist.id;
+        this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+          (response: any) => {
+            artist.albums = [];
+            console.log(artist);
+            if (response.json() != null) {
+              let responseJSON = response.json();
+              if (responseJSON != null && 'result' in responseJSON && 'albums' in responseJSON.result && responseJSON.result.albums.length > 0) {
+                responseJSON.result.albums.forEach((albumFromResponse: any) => {
+                  artist.albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, artist));
+                });
+              }
+            }
+            resolve(artist);
           }
         );
       }
