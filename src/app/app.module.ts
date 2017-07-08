@@ -11,6 +11,10 @@ import { CustomNavbarComponent } from '../components/custom-navbar/custom-navbar
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SettingsService } from "../providers/settings.service";
+import { PlaylistService } from "../providers/playlist.service";
+import { ServerApiService } from "../providers/server.api.service";
+import { MusicBrowserService } from "../providers/music.browser.service";
 
 @NgModule({
   declarations: [
@@ -37,7 +41,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ServerApiService,
+    PlaylistService,
+    MusicBrowserService,
+    SettingsService
   ]
 })
 export class AppModule {}
