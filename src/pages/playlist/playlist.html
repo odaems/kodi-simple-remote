@@ -3,20 +3,18 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-list-header>Current</ion-list-header>
-    <ion-item>
-      <ion-icon name="musical-note" item-left></ion-icon>
-      Song 1
-    </ion-item>
-    <ion-item>
-      <ion-icon name="musical-note" item-left></ion-icon>
-      Song 2
-    </ion-item>
-    <ion-item>
-      <ion-icon name="musical-note" item-left></ion-icon>
-      Song 3
+  <ion-list *ngIf="playlist != null && playlist.songs != null && playlist.songs.length > 0">
+    <ion-item *ngFor="let song of playlist.songs; let current = index">
+      <ion-icon *ngIf="playlist.activeIndex === current && playing" name="play" item-left></ion-icon>
+      <ion-icon *ngIf="playlist.activeIndex === current && !playing" name="pause" item-left></ion-icon>
+      <div (click)="play(current)">
+        {{ song.artist.name }} - {{ song.name }}<br /> {{ song.duration }}
+      </div>
+      <ion-icon *ngIf="playlist.activeIndex != current" name="trash" item-right color="danger" (click)="remove(current)"></ion-icon>
     </ion-item>
   </ion-list>
-
 </ion-content>
+<ion-footer text-center>
+  <button *ngIf="!playing" ion-button outline (click)="togglePlayback()">Play</button>
+  <button *ngIf="playing" ion-button outline (click)="togglePlayback()">Pause</button>
+</ion-footer>

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Artist } from "../models/artist";
 import { Album } from "../models/album";
 import { ServerApiService } from "./server.api.service";
+import { Song } from "../models/song";
+import { Playlist } from "../models/playlist";
 
 @Injectable()
 export class MusicBrowserService {
@@ -29,4 +31,5 @@ export class MusicBrowserService {
         return this.serverApi.getAlbum(album.id);
     }
 
+    
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
-import { Observable } from "rxjs/Rx";
+import { Http } from '@angular/http';
 import { Song } from "../models/song";
 import { Album } from "../models/album";
 import { Artist } from "../models/artist";
 import { SettingsService } from "./settings.service";
 import { ServerSettings } from "../models/server.settings";
+import { Playlist } from "../models/playlist";
 
 @Injectable()
 export class ServerApiService {
@@ -34,18 +34,58 @@ export class ServerApiService {
   private getAllArtistsRequest: Object = {
     "jsonrpc": "2.0",
     "method": "AudioLibrary.GetArtists",
-    "params": { },
+    "params": {},
     "id": "libSongs"
   }
 
-  private getAllSongsRequest: Object = {
+  private getCurrentPlaylistRequest: Object = {
     "jsonrpc": "2.0",
-    "method": "AudioLibrary.GetSongs",
-    "params": { "properties": ["albumid", "artist", "duration", "album", "track"] },
+    "method": "Playlist.GetItems",
+    "params": { "playlistid": 0, "properties": ["albumid", "duration", "artist", "artistid", "album", "track"] },
     "id": "libSongs"
   }
 
+  private getCurrentSongRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.GetItem",
+    "params": { "playerid": 0, "properties": ["albumid", "duration", "artist", "track", "artistid", "album"] },
+    "id": "libSongs"
+  }
 
+  private playSongFromPlaylistRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.GoTo",
+    "params": { "playerid": 0, "to": null },
+    "id": "libSongs"
+  }
+
+  private addSongToPlaylistRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Playlist.Add",
+    "params": { "playlistid": 0, "item": { "songid": null } },
+    "id": "libSongs"
+  }
+
+  private removeSongFromPlaylistRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Playlist.Remove",
+    "params": { "playlistid": 0, "position": null },
+    "id": "libSongs"
+  }
+
+  private togglePlaybackRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.PlayPause",
+    "params": { "playerid": 0 },
+    "id": "libSongs"
+  }
+
+  private getPlayerStatusRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.GetProperties",
+    "params": { "playerid": 0, "properties": ["speed"] },
+    "id": "libSongs"
+  }
 
   constructor(public http: Http, public settings: SettingsService) {
   }
@@ -127,7 +167,6 @@ export class ServerApiService {
         this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
           (response: any) => {
             artist.albums = [];
-            console.log(artist);
             if (response.json() != null) {
               let responseJSON = response.json();
               if (responseJSON != null && 'result' in responseJSON && 'albums' in responseJSON.result && responseJSON.result.albums.length > 0) {
@@ -147,13 +186,130 @@ export class ServerApiService {
     return [];
   }
 
-  sendPlaylist() {
+  getCurrentPlaylist(): Promise<Playlist> {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.getCurrentPlaylistRequest)).subscribe(
+          (response: any) => {
+            let playlist = new Playlist();
+            if (response.json() != null) {
+              let responseJSON = response.json();
+              if (responseJSON != null && 'result' in responseJSON && 'items' in responseJSON.result && responseJSON.result.items.length > 0) {
+                responseJSON.result.items.forEach((songFromResponse: any) => {
+                  let artist = new Artist(undefined, songFromResponse.artist[0]);
+                  playlist.songs.push(new Song(songFromResponse.id, songFromResponse.label, songFromResponse.duration, songFromResponse.track, 0,
+                    artist, new Album(songFromResponse.albumid, songFromResponse.album, artist)));
+                });
+              }
+            }
+            resolve(playlist);
+          }
+        );
+      }
+    );
+  }
+
+  getCurrentSong(): Promise<Song> {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.getCurrentSongRequest)).subscribe(
+          (response: any) => {
+            if (response.json() != null) {
+              let responseJSON = response.json();
+              if (responseJSON != null && 'result' in responseJSON && 'item' in responseJSON.result && responseJSON.result.item != null) {
+                let songFromResponse = responseJSON.result.item;
+                if (songFromResponse.type != "unknown") {
+                  let artist = new Artist(songFromResponse.artistid[0], songFromResponse.artist[0]);
+                  resolve(new Song(songFromResponse.id, songFromResponse.label, songFromResponse.duration, songFromResponse.track, 0,
+                    artist, new Album(songFromResponse.albumid, songFromResponse.album, artist)));
+                }
+                else {
+                  resolve({});
+                }
+              }
+            }
+
+          }
+        );
+      }
+    );
+  }
+
+  playSong(index) {
+    return new Promise(
+      (resolve: any) => {
+        let requestObject: any = this.playSongFromPlaylistRequest;
+        requestObject.params.to = index;
+        this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+          () => resolve()
+        );
+      }
+    );
+  }
+
+  togglePlayback(): Promise<boolean> {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.togglePlaybackRequest)).subscribe(
+          (response: any) => {
+            let responseBody: any = response.json();
+            if ('result' in responseBody && 'speed' in responseBody.result && responseBody.result.speed === 1) {
+              resolve(true);
+            }
+            else {
+              resolve(false);
+            }
+          }
+        );
+      }
+    );
+  }
+
+  getPlayerStatus(): Promise<boolean> {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.getPlayerStatusRequest)).subscribe(
+          (response: any) => {
+            let responseBody: any = response.json();
+            if ('result' in responseBody && 'speed' in responseBody.result && responseBody.result.speed === 1) {
+              resolve(true);
+            }
+            else {
+              resolve(false);
+            }
+          }
+        );
+      }
+    );
+  }
+
+  addSongToPlaylist(song: Song): Promise<any> {
+    return new Promise(
+      (resolve: any) => {
+        let requestObject: any = this.addSongToPlaylistRequest;
+        requestObject.params.item.songid = song.id;
+        this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+          () => resolve()
+        );
+      }
+    );
 
   }
 
-  fetchPlaylist() {
-
+  removeSongFromPlaylist(index: number): Promise<any> {
+    return new Promise(
+      (resolve: any) => {
+        let requestObject: any = this.removeSongFromPlaylistRequest;
+        requestObject.params.position = index;
+        this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+          () => resolve()
+        );
+      }
+    );
   }
+
+
+
   private generateURL() {
     let settings: ServerSettings = this.settings.getServerSettings();
     return 'http://' + settings.userName + ':' + settings.password + '@' + settings.host + ':' + settings.port + '/jsonrpc?request=';

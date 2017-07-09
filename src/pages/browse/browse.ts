@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { Album } from "../../models/album";
 import { Artist } from "../../models/artist";
 import { MusicBrowserService } from "../../providers/music.browser.service";
+import { Song } from "../../models/song";
+import { PlaylistService } from "../../providers/playlist.service";
 
 @Component({
   selector: 'page-browse',
@@ -18,7 +20,8 @@ export class BrowsePage {
   private artistMode: boolean;
 
   constructor(public navCtrl: NavController,
-    public musicBrowser: MusicBrowserService) {
+    public musicBrowser: MusicBrowserService,
+    public playlistService: PlaylistService) {
   }
 
   ngOnInit() {
@@ -39,6 +42,10 @@ export class BrowsePage {
         this.currentAlbum = undefined;
       }
     )
+  }
+
+  addToPlaylist(song: Song) {
+    this.playlistService.addSong(song);
   }
 
   selectAlbum(album: Album) {

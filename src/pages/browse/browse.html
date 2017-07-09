@@ -8,7 +8,6 @@
     <button *ngIf="currentArtist != null" ion-button outline [disabled]="currentAlbum == null" (click)="selectArtist(currentArtist)">{{ currentArtist.name }}</button>
     <button *ngIf="currentAlbum != null" ion-button outline disabled>{{ currentAlbum.name }}</button>
   </div>
-  <h2>Music</h2>
   <ion-list [style.display]="((currentArtist != null) ? 'none' : '')" [virtualScroll]="artists">
     <ion-item *virtualItem="let artist" (click)="selectArtist(artist)">
       {{ artist.name }}
@@ -20,7 +19,7 @@
     </ion-item>
   </ion-list>
   <ion-list *ngIf="currentAlbum != null">
-    <ion-item *ngFor="let song of currentAlbum.songs" (click)="queue(song)">
+    <ion-item *ngFor="let song of currentAlbum.songs" (click)="addToPlaylist(song)">
       {{ song.name }} / {{ song.duration }}
     </ion-item>
   </ion-list>

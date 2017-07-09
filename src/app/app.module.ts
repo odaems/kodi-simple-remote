@@ -15,7 +15,7 @@ import { SettingsService } from "../providers/settings.service";
 import { PlaylistService } from "../providers/playlist.service";
 import { ServerApiService } from "../providers/server.api.service";
 import { MusicBrowserService } from "../providers/music.browser.service";
-import { HttpModule, Http } from '@angular/http';
+import { HttpModule } from '@angular/http';
 
 @NgModule({
   declarations: [
