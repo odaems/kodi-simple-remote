@@ -3,6 +3,14 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
   <div text-left>
     <button ion-button outline [disabled]="currentArtist == null" (click)="backToAlbums()">Artists</button>
     <button *ngIf="currentArtist != null" ion-button outline [disabled]="currentAlbum == null" (click)="selectArtist(currentArtist)">{{ currentArtist.name }}</button>

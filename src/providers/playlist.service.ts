@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Song } from "../models/song";
 import { ServerApiService } from "./server.api.service";
 import { Playlist } from "../models/playlist";
-import { MusicBrowserService } from "./music.browser.service";
 
 @Injectable()
 export class PlaylistService {

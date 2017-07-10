@@ -7,10 +7,35 @@
 </ion-header>
 
 <ion-content padding>
-  <p>This will show settings</p>
+  <ion-list>
+    <ion-item>
+      <ion-label floating>
+        Host
+      </ion-label>
+      <ion-input type="text" [(ngModel)]="host"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>
+        Port
+      </ion-label>
+      <ion-input type="number" [(ngModel)]="port"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>
+        Username
+      </ion-label>
+      <ion-input type="text" [(ngModel)]="userName"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label floating>
+        Password
+      </ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+  </ion-list>
 </ion-content>
 <ion-footer text-center>
-  <button ion-button large block color="default" (click)="close()">
-        Close
+  <button ion-button large block color="default" (click)="save()">
+        Save
     </button>
 </ion-footer>

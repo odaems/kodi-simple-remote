@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { Album } from "../../models/album";
 import { Artist } from "../../models/artist";
 import { MusicBrowserService } from "../../providers/music.browser.service";
@@ -17,16 +17,16 @@ export class BrowsePage {
   private artists: Artist[];
   private currentAlbum: Album;
   private currentArtist: Artist;
-  private artistMode: boolean;
 
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService,
-    public playlistService: PlaylistService) {
-  }
-
-  ngOnInit() {
-    this.refresh();
-    this.artistMode = true;
+    public playlistService: PlaylistService,
+    platform: Platform) {
+    platform.ready().then(
+      () => {
+        this.refresh();
+      }
+    );
   }
 
   backToAlbums() {
@@ -52,9 +52,20 @@ export class BrowsePage {
     this.musicBrowser.getAlbum(album).then((album: Album) => this.currentAlbum = album);
   }
 
-  refresh() {
-    this.musicBrowser.getAllAlbums().then((albums: Album[]) => this.albums = albums);
-    this.musicBrowser.getAllArtists().then((artists: Artist[]) => this.artists = artists);
+  refresh(refresher?: any) {
+    this.musicBrowser.getAllArtists().then(
+      (artists: Artist[]) => {
+        this.artists = artists;
+        if (refresher != null) {
+          refresher.complete();
+        }
+      },
+      () => {
+        if (refresher != null) {
+          refresher.cancel();
+        }
+      }
+    );
   }
 
 }
