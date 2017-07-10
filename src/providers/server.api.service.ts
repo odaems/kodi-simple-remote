@@ -119,7 +119,8 @@ export class ServerApiService {
               }
             }
             resolve(artists);
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -141,7 +142,8 @@ export class ServerApiService {
               }
             }
             resolve(albums);
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -167,7 +169,8 @@ export class ServerApiService {
               }
             }
             resolve({});
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -190,7 +193,8 @@ export class ServerApiService {
               }
             }
             resolve(artist);
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -243,7 +247,8 @@ export class ServerApiService {
               }
             }
 
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -255,7 +260,8 @@ export class ServerApiService {
         let requestObject: any = this.playSongFromPlaylistRequest;
         requestObject.params.to = index;
         this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
-          () => resolve()
+          () => resolve(),
+          (error: any) => console.log(error)
         );
       }
     );
@@ -265,7 +271,8 @@ export class ServerApiService {
     return new Promise(
       (resolve: any) => {
         this.http.get(this.generateURL() + JSON.stringify(this.startPlayerWithPlaylistRequest)).subscribe(
-          () => resolve()
+          () => resolve(),
+          (error: any) => console.log(error)
         );
       }
     );
@@ -275,7 +282,8 @@ export class ServerApiService {
     return new Promise(
       (resolve: any) => {
         this.http.get(this.generateURL() + JSON.stringify(this.stopPlayerRequest)).subscribe(
-          () => resolve()
+          () => resolve(),
+          (error: any) => console.log(error)
         );
       }
     );
@@ -296,7 +304,8 @@ export class ServerApiService {
             else {
               resolve(false);
             }
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -314,7 +323,8 @@ export class ServerApiService {
             else {
               resolve(false);
             }
-          }
+          },
+          (error: any) => console.log(error)
         );
       }
     );
@@ -328,7 +338,8 @@ export class ServerApiService {
         let requestObject: any = this.addSongToPlaylistRequest;
         requestObject.params.item.songid = song.id;
         this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
-          () => resolve()
+          () => resolve(),
+          (error: any) => console.log(error)
         );
       }
     );
@@ -341,13 +352,12 @@ export class ServerApiService {
         let requestObject: any = this.removeSongFromPlaylistRequest;
         requestObject.params.position = index;
         this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
-          () => resolve()
+          () => resolve(),
+          (error: any) => console.log(error)
         );
       }
     );
   }
-
-
 
   private generateURL() {
     let settings: ServerSettings = this.settings.getServerSettings();

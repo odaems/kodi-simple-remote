@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Playlist } from "../../models/playlist";
 import { PlaylistService } from "../../providers/playlist.service";
-import { Song } from "../../models/song";
 import { ServerApiService } from "../../providers/server.api.service";
 
 @Component({
@@ -15,7 +14,7 @@ export class PlaylistPage {
   private playing: boolean;
 
   constructor(public navCtrl: NavController, public playlistService: PlaylistService, public serverApi: ServerApiService) {
-    
+
   }
 
   //Otherwise adding a song without visiting this will result in illegal state
@@ -45,7 +44,12 @@ export class PlaylistPage {
   }
 
   stopPlayer() {
-    this.serverApi.stopPlayer().then(() => this.playing = false);
+    this.serverApi.stopPlayer().then(
+      () => {
+        this.playing = false
+        this.playlist.activeIndex = undefined;
+      }
+    );
   }
 
   remove(index: number) {

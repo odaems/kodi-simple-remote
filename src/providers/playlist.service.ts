@@ -20,14 +20,23 @@ export class PlaylistService {
     this.getCurrentPlaylist().then(
       (playlist: Playlist) => {
         this.playlist = playlist;
+        console.log(playlist);
+        let autoStart = false;
+        // if this was the first song added to the playlist, initialize player:
+        if (this.playlist.songs.length === 0) {
+          autoStart = true;
+        }
+
         this.playlist.songs.push(song);
-        this.serverApi.addSongToPlaylist(song);
+        this.serverApi.addSongToPlaylist(song).then(
+          () => {
+            if (autoStart) {
+              this.serverApi.startPlayer();
+            }
+          }
+        );
       }
     );
-    // if this was the first song added to the playlist, initialize player:
-    if (this.playlist.songs.length === 1) {
-        this.serverApi.startPlayer();
-    }
   }
 
   removeSong(index: number) {

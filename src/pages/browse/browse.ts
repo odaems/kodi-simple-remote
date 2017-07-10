@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, Platform } from 'ionic-angular';
+import { NavController, Platform, ToastController } from 'ionic-angular';
 import { Album } from "../../models/album";
 import { Artist } from "../../models/artist";
 import { MusicBrowserService } from "../../providers/music.browser.service";
@@ -21,12 +21,22 @@ export class BrowsePage {
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService,
     public playlistService: PlaylistService,
-    platform: Platform) {
+    platform: Platform,
+    private toast: ToastController) {
     platform.ready().then(
       () => {
         this.refresh();
       }
     );
+  }
+
+  showSongAddedToast(song: Song) {
+    let toastr = this.toast.create({
+      message: '"' + song.artist.name + ' - ' + song.name + '" zur Playlist hinzugefügt!',
+      duration: 4000,
+      position: 'top'
+    });
+    toastr.present();
   }
 
   backToAlbums() {
@@ -46,6 +56,7 @@ export class BrowsePage {
 
   addToPlaylist(song: Song) {
     this.playlistService.addSong(song);
+    this.showSongAddedToast(song);
   }
 
   selectAlbum(album: Album) {

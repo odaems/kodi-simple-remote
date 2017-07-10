@@ -1,6 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { IonicApp, IonicModule, IonicErrorHandler, ToastController } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -49,7 +49,8 @@ import { HttpModule } from '@angular/http';
     ServerApiService,
     PlaylistService,
     MusicBrowserService,
-    SettingsService
+    SettingsService,
+    ToastController
   ]
 })
 export class AppModule { }
