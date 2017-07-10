@@ -60,6 +60,8 @@ export class BrowsePage {
   }
 
   refresh(refresher?: any) {
+    // if this fails, we want to at least cancel the refresher:
+    setTimeout(() => refresher.cancel(), 10000);
     this.musicBrowser.getAllArtists().then(
       (artists: Artist[]) => {
         this.artists = artists;

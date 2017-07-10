@@ -26,9 +26,22 @@ export class PlaylistPage {
     this.refresh();
   }
 
-  refresh() {
-    this.playlistService.getCurrentPlaylist().then((playlist: Playlist) => this.playlist = playlist);
-    this.serverApi.getPlayerStatus().then((status: boolean) => this.playing = status);
+  refresh(refresher?: any) {
+    // if this fails, we want to at least cancel the refresher:
+    setTimeout(() => refresher.complete(), 10000);
+    this.playlistService.getCurrentPlaylist().then(
+      (playlist: Playlist) => {
+        this.playlist = playlist;
+        this.serverApi.getPlayerStatus().then(
+          (status: boolean) => {
+            this.playing = status;
+            if (refresher != null) {
+              refresher.complete();
+            }
+          }
+        );
+      }
+    );
   }
 
   play(index: number) {
