@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, Platform, ToastController } from 'ionic-angular';
+import { NavController, ToastController, Events } from 'ionic-angular';
 import { Album } from "../../models/album";
 import { Artist } from "../../models/artist";
 import { MusicBrowserService } from "../../providers/music.browser.service";
@@ -21,13 +21,9 @@ export class BrowsePage {
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService,
     public playlistService: PlaylistService,
-    platform: Platform,
-    private toast: ToastController) {
-    platform.ready().then(
-      () => {
-        this.refresh();
-      }
-    );
+    private toast: ToastController,
+    public events: Events) {
+    this.events.subscribe('settings:available', () => this.refresh());
   }
 
   showSongAddedToast(song: Song) {

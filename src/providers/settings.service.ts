@@ -1,17 +1,24 @@
 import { Injectable } from '@angular/core';
 import { ServerSettings } from "../models/server.settings";
 import { Storage } from '@ionic/storage';
-import { Platform } from "ionic-angular";
+import { Platform, Events } from "ionic-angular";
 
 @Injectable()
 export class SettingsService {
 
   private settings: ServerSettings;
 
-  constructor(platform: Platform, private storage: Storage) {
+  constructor(platform: Platform, 
+  private storage: Storage,
+  public events: Events) {
     platform.ready().then(
       () => {
-        this.loadServerSettings().then((settings: ServerSettings) => this.settings = settings);
+        this.loadServerSettings().then(
+          (settings: ServerSettings) => {
+            this.settings = settings;
+            this.events.publish('settings:available');
+          }
+        );
       }
     );
   }
