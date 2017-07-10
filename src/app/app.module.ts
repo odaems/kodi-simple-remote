@@ -16,7 +16,12 @@ import { SettingsService } from "../providers/settings.service";
 import { PlaylistService } from "../providers/playlist.service";
 import { ServerApiService } from "../providers/server.api.service";
 import { MusicBrowserService } from "../providers/music.browser.service";
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
+import { TranslateModule, TranslateStaticLoader, TranslateLoader } from 'ng2-translate';
+
+export function createTranslateLoader(http: Http): TranslateStaticLoader {
+  return new TranslateStaticLoader(http, './assets/i18n', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -31,6 +36,11 @@ import { HttpModule } from '@angular/http';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     HttpModule,
+    TranslateModule.forRoot({
+      provide: TranslateLoader,
+      useFactory: createTranslateLoader,
+      deps: [Http]
+    }),
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],

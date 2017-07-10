@@ -8,15 +8,17 @@ import { ServerSettings } from "../../models/server.settings";
   templateUrl: 'settings.html'
 })
 export class SettingsModal {
-  private host:string;
+  private host: string;
   private port: number;
   private userName: string;
   private password: string;
-  
-  
+  // tslint:disable-next-line:no-unused-variable
+  private availableLanguages: string[] = ['en', 'de']
+  private selectedLang: string;
+
   constructor(public navCtrl: NavController,
-  public viewCtrl: ViewController,
-  public settingsService: SettingsService) {
+    public viewCtrl: ViewController,
+    public settingsService: SettingsService) {
 
   }
 
@@ -30,11 +32,18 @@ export class SettingsModal {
           this.password = settings.password;
         }
       }
-    )
+    );
+    this.selectedLang = this.settingsService.getLanguageSetting();
   }
 
   close() {
     this.viewCtrl.dismiss();
+  }
+
+  changeLanguage(lang: string) {
+    if (lang != null && lang != "") {
+      this.settingsService.saveLanguageSettings(lang);
+    }
   }
 
   save() {

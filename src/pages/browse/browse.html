@@ -12,7 +12,7 @@
     </ion-refresher-content>
   </ion-refresher>
   <div text-left>
-    <button ion-button outline [disabled]="currentArtist == null" (click)="backToAlbums()">Artists</button>
+    <button ion-button outline [disabled]="currentArtist == null" (click)="backToAlbums()">{{ 'ARTIST_BUTTON' | translate }}</button>
     <button *ngIf="currentArtist != null" ion-button outline [disabled]="currentAlbum == null" (click)="selectArtist(currentArtist)">{{ currentArtist.name }}</button>
     <button *ngIf="currentAlbum != null" ion-button outline disabled>{{ currentAlbum.name }}</button>
   </div>

@@ -15,7 +15,7 @@
   </ion-list>
 </ion-content>
 <ion-footer text-center>
-  <button *ngIf="!playing" ion-button outline (click)="togglePlayback()">Play</button>
-  <button *ngIf="playing" ion-button outline (click)="togglePlayback()">Pause</button>
-  <button [disabled]="!playing" ion-button outline (click)="stopPlayer()">Stop</button>
+  <button *ngIf="!playing" ion-button outline (click)="togglePlayback()">{{ 'PLAY_BUTTON' | translate }}</button>
+  <button *ngIf="playing" ion-button outline (click)="togglePlayback()">{{ 'PAUSE_BUTTON' | translate }}</button>
+  <button [disabled]="!playing" ion-button outline (click)="stopPlayer()">{{ 'STOP_BUTTON' | translate }}</button>
 </ion-footer>

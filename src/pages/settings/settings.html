@@ -10,6 +10,15 @@
   <ion-list>
     <ion-item>
       <ion-label floating>
+        {{ 'LANGUAGE' | translate }}
+      </ion-label>
+      <ion-select (ionChange)="changeLanguage($event)">
+        <ion-option *ngFor="let lang of availableLanguages" [selected]="lang == selectedLang" [value]="lang">{{ lang | translate }}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label floating>
         Host
       </ion-label>
       <ion-input type="text" [(ngModel)]="host"></ion-input>
@@ -36,6 +45,6 @@
 </ion-content>
 <ion-footer text-center>
   <button ion-button large block color="default" (click)="save()">
-        Save
+        {{ 'SAVE_BUTTON' | translate }}
     </button>
 </ion-footer>
