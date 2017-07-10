@@ -5,7 +5,7 @@ import { ServerApiService } from "./server.api.service";
 
 @Injectable()
 export class MusicBrowserService {
-    constructor(private serverApi: ServerApiService) {
+    constructor(public serverApi: ServerApiService) {
 
     }
 

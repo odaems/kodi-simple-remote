@@ -7,10 +7,10 @@ import { TranslateService } from "ng2-translate";
 @Injectable()
 export class SettingsService {
 
-  private settings: ServerSettings;
-  private selectedLanguage: string;
+  public settings: ServerSettings;
+  public selectedLanguage: string;
 
-  constructor(private storage: Storage,
+  constructor(public storage: Storage,
     public events: Events,
     public translate: TranslateService) {
     storage.ready().then(

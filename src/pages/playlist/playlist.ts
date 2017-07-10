@@ -10,8 +10,8 @@ import { ServerApiService } from "../../providers/server.api.service";
 })
 export class PlaylistPage {
 
-  private playlist: Playlist;
-  private playing: boolean;
+  public playlist: Playlist;
+  public playing: boolean;
 
   constructor(public navCtrl: NavController, public playlistService: PlaylistService, public serverApi: ServerApiService) {
 

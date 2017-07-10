@@ -13,15 +13,15 @@ import { PlaylistService } from "../../providers/playlist.service";
 
 export class BrowsePage {
 
-  private albums: Album[] = [];
-  private artists: Artist[];
-  private currentAlbum: Album;
-  private currentArtist: Artist;
+  public albums: Album[] = [];
+  public artists: Artist[];
+  public currentAlbum: Album;
+  public currentArtist: Artist;
 
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService,
     public playlistService: PlaylistService,
-    private toast: ToastController,
+    public toast: ToastController,
     public events: Events) {
     this.events.subscribe('settings:available', () => this.refresh());
   }
