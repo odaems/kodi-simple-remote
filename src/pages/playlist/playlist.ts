@@ -37,7 +37,15 @@ export class PlaylistPage {
   }
 
   togglePlayback() {
-    this.serverApi.togglePlayback().then((status: boolean) => this.playing = status);
+    this.serverApi.togglePlayback().then(
+      (status: boolean) => this.playing = status,
+      () => {
+        this.serverApi.startPlayer();
+      });
+  }
+
+  stopPlayer() {
+    this.serverApi.stopPlayer().then(() => this.playing = false);
   }
 
   remove(index: number) {

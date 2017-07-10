@@ -8,7 +8,7 @@ export class SettingsService {
   }
 
   getServerSettings() {
-    return new ServerSettings("192.168.0.20", 8080, "kodi", "kodi");
+    return new ServerSettings("192.168.1.169", 8080, "kodi", "kodi");
   }
 
   saveServerSettings() {

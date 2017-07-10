@@ -87,6 +87,20 @@ export class ServerApiService {
     "id": "libSongs"
   }
 
+  private startPlayerWithPlaylistRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.Open",
+    "params": { "item": { "playlistid": 0 } },
+    "id": "libSongs"
+  }
+
+  private stopPlayerRequest: Object = {
+    "jsonrpc": "2.0",
+    "method": "Player.Stop",
+    "params": { "playerid": 0 },
+    "id": "libSongs"
+  }
+
   constructor(public http: Http, public settings: SettingsService) {
   }
 
@@ -235,7 +249,7 @@ export class ServerApiService {
     );
   }
 
-  playSong(index) {
+  playSong(index: number) {
     return new Promise(
       (resolve: any) => {
         let requestObject: any = this.playSongFromPlaylistRequest;
@@ -247,13 +261,36 @@ export class ServerApiService {
     );
   }
 
-  togglePlayback(): Promise<boolean> {
+  startPlayer() {
     return new Promise(
       (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.startPlayerWithPlaylistRequest)).subscribe(
+          () => resolve()
+        );
+      }
+    );
+  }
+
+  stopPlayer() {
+    return new Promise(
+      (resolve: any) => {
+        this.http.get(this.generateURL() + JSON.stringify(this.stopPlayerRequest)).subscribe(
+          () => resolve()
+        );
+      }
+    );
+  }
+
+  togglePlayback(): Promise<boolean> {
+    return new Promise(
+      (resolve: any, reject: any) => {
         this.http.get(this.generateURL() + JSON.stringify(this.togglePlaybackRequest)).subscribe(
           (response: any) => {
             let responseBody: any = response.json();
-            if ('result' in responseBody && 'speed' in responseBody.result && responseBody.result.speed === 1) {
+            if ('error' in responseBody) {
+              reject(false);
+            }
+            else if ('result' in responseBody && 'speed' in responseBody.result && responseBody.result.speed === 1) {
               resolve(true);
             }
             else {
@@ -282,6 +319,8 @@ export class ServerApiService {
       }
     );
   }
+
+
 
   addSongToPlaylist(song: Song): Promise<any> {
     return new Promise(

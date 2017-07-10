@@ -13,7 +13,7 @@ import { PlaylistService } from "../../providers/playlist.service";
 
 export class BrowsePage {
 
-  private albums: Album[];
+  private albums: Album[] = [];
   private artists: Artist[];
   private currentAlbum: Album;
   private currentArtist: Artist;

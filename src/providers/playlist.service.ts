@@ -25,6 +25,10 @@ export class PlaylistService {
         this.serverApi.addSongToPlaylist(song);
       }
     );
+    // if this was the first song added to the playlist, initialize player:
+    if (this.playlist.songs.length === 1) {
+        this.serverApi.startPlayer();
+    }
   }
 
   removeSong(index: number) {
