@@ -4,11 +4,7 @@
 
 <ion-content padding>
   <ion-refresher (ionRefresh)="refresh($event)">
-    <ion-refresher-content
-      pullingIcon="arrow-dropdown"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
   <div text-left>
@@ -21,14 +17,31 @@
       {{ artist.name }}
     </ion-item>
   </ion-list>
-  <ion-list [style.display]="((currentArtist == null || currentAlbum != null) ? 'none' : '')" [virtualScroll]="albums">
-    <ion-item *virtualItem="let album" (click)="selectAlbum(album)">
-      {{ album.artist.name }} - {{ album.name }}
+  <ion-slides *ngIf="currentArtist != null && currentAlbum == null" [initialSlide]="0" effect="coverflow">
+    <ion-slide *ngFor="let album of albums">
+      <!--div [style]="background-image: url('http://" + settings.host + ':' + settings.port + proxyPrefix + '/image/' + album.thumbnail + "');"></div-->
+      <div>
+        <img *ngIf="album.thumbnail" [src]="'http://' + settings.host + ':' + settings.port + proxyPrefix + '/image/' + album.thumbnail"
+        alt="artwork" (click)="selectAlbum(album)"/>
+        <button ion-button outline *ngIf="!album.thumbnail" (click)="selectAlbum(album)">{{album.name}}</button>
+      </div>
+
+    </ion-slide>
+  </ion-slides>  
+  <!--ion-list [style.display]="((currentArtist == null || currentAlbum != null) ? 'none' : '')" [virtualScroll]="albums" approxItemHeight="'100px'">
+    <ion-item *virtualItem="let album">
+        <ion-thumbnail item-start>  
+          <img *ngIf="album.thumbnail" [src]="'http://' + settings.host + ':' + settings.port + proxyPrefix + '/image/' + album.thumbnail"
+          alt="artwork"/>
+        </ion-thumbnail>
+        {{ album.artist.name }} - {{ album.name }}
+        <button (click)="selectAlbum(album)" ion-button outline item-end>{{ 'OPEN' | translate }}</button>
     </ion-item>
-  </ion-list>
+  </ion-list-->
   <ion-list *ngIf="currentAlbum != null">
     <ion-item *ngFor="let song of currentAlbum.songs" (click)="addToPlaylist(song)">
-      {{ song.name }} / {{ song.duration }}
+      {{ song.name }}  
+      <span item-end>{{ song.duration | date:'HH:mm:ss'}}</span>
     </ion-item>
   </ion-list>
 </ion-content>

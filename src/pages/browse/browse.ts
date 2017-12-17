@@ -1,3 +1,4 @@
+import { ServerSettings } from '../../models/server.settings';
 import { Component } from '@angular/core';
 import { NavController, ToastController, Events } from 'ionic-angular';
 import { Album } from "../../models/album";
@@ -17,19 +18,27 @@ export class BrowsePage {
   public artists: Artist[];
   public currentAlbum: Album;
   public currentArtist: Artist;
+  public settings: ServerSettings;
+  public proxyPrefix: string = "";
 
   constructor(public navCtrl: NavController,
     public musicBrowser: MusicBrowserService,
     public playlistService: PlaylistService,
     public toast: ToastController,
     public events: Events) {
-    this.events.subscribe('settings:available', () => this.refresh());
+    this.events.subscribe('settings:available', (settings: ServerSettings) => {
+      this.settings = settings;
+      this.refresh();
+    });
+    if (!(<any>window).cordova) {
+      this.proxyPrefix = "/api";
+    }
   }
 
   showSongAddedToast(song: Song) {
     let toastr = this.toast.create({
       message: '"' + song.artist.name + ' - ' + song.name + '" zur Playlist hinzugefügt!',
-      duration: 4000,
+      duration: 2000,
       position: 'top'
     });
     toastr.present();
@@ -61,7 +70,11 @@ export class BrowsePage {
 
   refresh(refresher?: any) {
     // if this fails, we want to at least cancel the refresher:
-    setTimeout(() => refresher.cancel(), 10000);
+    setTimeout(() => {
+      if (refresher != null) {
+        refresher.cancel();
+      }
+    }, 10000);
     this.musicBrowser.getAllArtists().then(
       (artists: Artist[]) => {
         this.artists = artists;

@@ -16,7 +16,8 @@
       <ion-icon *ngIf="playlist.activeIndex === current && playing" name="play" item-left></ion-icon>
       <ion-icon *ngIf="playlist.activeIndex === current && !playing" name="pause" item-left></ion-icon>
       <div (click)="play(current)">
-        {{ song.artist.name }} - {{ song.name }}<br /> {{ song.duration }}
+          {{ song.artist.name }} - {{ song.name }}<br/>  
+          <span item-end>{{ song.duration | date:'HH:mm:ss'}}</span>
       </div>
       <ion-icon *ngIf="playlist.activeIndex != current" name="trash" item-right color="danger" (click)="remove(current)"></ion-icon>
     </ion-item>

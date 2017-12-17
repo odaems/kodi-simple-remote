@@ -20,21 +20,21 @@ export class ServerApiService {
   private albumsForArtistRequest: Object = {
     "jsonrpc": "2.0",
     "method": "AudioLibrary.GetAlbums",
-    "params": { "properties": [], "filter": { "artistid": null } },
+    "params": { "properties": ["thumbnail"], "filter": { "artistid": null } },
     "id": "libSongs"
   }
 
   private getAllAlbumsRequest: Object = {
     "jsonrpc": "2.0",
     "method": "AudioLibrary.GetAlbums",
-    "params": { "properties": ["artist", "artistid"] },
+    "params": { "properties": ["artist", "artistid", "thumbnail"] },
     "id": "libSongs"
   }
 
   private getAllArtistsRequest: Object = {
     "jsonrpc": "2.0",
     "method": "AudioLibrary.GetArtists",
-    "params": {},
+    "params": {"sort": { "order": "ascending", "method": "artist", "ignorearticle": true }},
     "id": "libSongs"
   }
 
@@ -137,7 +137,7 @@ export class ServerApiService {
               if (responseJSON != null && 'result' in responseJSON && 'albums' in responseJSON.result && responseJSON.result.albums.length > 0) {
                 responseJSON.result.albums.forEach((albumFromResponse: any) => {
                   let albumArtist: Artist = new Artist(albumFromResponse.artistid[0], albumFromResponse.artist[0]);
-                  albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, albumArtist));
+                  albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, albumArtist, albumFromResponse.thumbnail));
                 });
               }
             }
@@ -188,7 +188,7 @@ export class ServerApiService {
               let responseJSON = response.json();
               if (responseJSON != null && 'result' in responseJSON && 'albums' in responseJSON.result && responseJSON.result.albums.length > 0) {
                 responseJSON.result.albums.forEach((albumFromResponse: any) => {
-                  artist.albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, artist));
+                  artist.albums.push(new Album(albumFromResponse.albumid, albumFromResponse.label, artist, albumFromResponse.thumbnail));
                 });
               }
             }
@@ -259,10 +259,33 @@ export class ServerApiService {
       (resolve: any) => {
         let requestObject: any = this.playSongFromPlaylistRequest;
         requestObject.params.to = index;
-        this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
-          () => resolve(),
-          (error: any) => console.log(error)
-        );
+        this.http.get(this.generateURL() + JSON.stringify(this.getCurrentSongRequest)).subscribe(
+          (response: any) => {
+            let responseJSON = { result: { item: { label: ""}}};
+            if (response.json() != null) {
+              responseJSON = response.json();
+            }
+            if (responseJSON.result != null && responseJSON.result.item != null 
+              && responseJSON.result.item.label != "") {
+              console.log("trying to start playback!");
+              console.log(responseJSON);
+              this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+                () => resolve(),
+                (error: any) => console.log(error)
+              );
+            }
+            else {
+              console.log("this.startPlayer()");
+              this.startPlayer().then(
+                () => {
+                  this.http.get(this.generateURL() + JSON.stringify(requestObject)).subscribe(
+                    () => resolve(),
+                    (error: any) => console.log(error)
+                  );
+                }
+              )
+            }
+        });
       }
     );
   }
@@ -361,7 +384,12 @@ export class ServerApiService {
 
   private generateURL() {
     let settings: ServerSettings = this.settings.getServerSettings();
-    return 'http://' + settings.userName + ':' + settings.password + '@' + settings.host + ':' + settings.port + '/jsonrpc?request=';
+    console.log('http://' + settings.userName + ':' + settings.password + '@' + settings.host + ':' + settings.port + '/jsonrpc?request=');
+    if ((<any>window).cordova) {
+      return 'http://' + settings.userName + ':' + settings.password + '@' + settings.host + ':' + settings.port + '/jsonrpc?request=';
+    } else {
+      return 'http://' + settings.userName + ':' + settings.password + '@' + settings.host + ':' + settings.port + '/api/jsonrpc?request=';
+    }
   }
 
 }

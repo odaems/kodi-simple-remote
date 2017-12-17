@@ -18,7 +18,7 @@ export class SettingsService {
         this.loadServerSettings().then(
           (settings: ServerSettings) => {
             this.settings = settings;
-            this.events.publish('settings:available');
+            this.events.publish('settings:available', settings);
           }
         );
         this.loadLanguageSettings();

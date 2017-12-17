@@ -28,7 +28,8 @@ export class PlaylistPage {
 
   refresh(refresher?: any) {
     // if this fails, we want to at least cancel the refresher:
-    setTimeout(() => refresher.complete(), 10000);
+    if (refresher != null)
+      setTimeout(() => refresher.complete(), 10000);
     this.playlistService.getCurrentPlaylist().then(
       (playlist: Playlist) => {
         this.playlist = playlist;
